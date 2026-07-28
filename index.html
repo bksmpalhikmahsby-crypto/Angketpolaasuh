@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angket Situasi Pengasuhan Orang Tua</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#20303F;
+  --ink-soft:#4A5A68;
+  --paper:#F3F0E6;
+  --paper-card:#FBFAF5;
+  --line:#DCD5C2;
+  --accent:#3C6E58;      /* forest teal - otoritatif / primary */
+  --accent-soft:#E4EBE4;
+  --gold:#C0872F;        /* ochre - warmth / highlights */
+  --rust:#8C3F2C;        /* deep rust - otoriter, admin only */
+  --slate:#6B7280;       /* penelantar, admin only */
+  --gold-badge:#C0872F;  /* permisif, admin only */
+  --radius:14px;
+  --shadow: 0 1px 2px rgba(32,48,63,.06), 0 8px 24px -12px rgba(32,48,63,.18);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, #EFE9D8 0%, transparent 60%),
+    var(--paper);
+  color:var(--ink);
+  font-family:'Work Sans', sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.app{width:100%;max-width:720px;padding:32px 20px 80px;flex:1;display:flex;flex-direction:column;}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:6px 2px 22px; font-family:'IBM Plex Mono', monospace;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft);
+}
+.topbar .brand{display:flex;align-items:center;gap:8px;}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+
+/* ---------- card ---------- */
+.card{
+  background:var(--paper-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:40px 36px;
+  position:relative;
+  overflow:hidden;
+}
+/* stitched binding signature, left edge */
+.card::before{
+  content:"";
+  position:absolute; left:0; top:0; bottom:0; width:22px;
+  background-image: repeating-linear-gradient(to bottom, var(--line) 0 2px, transparent 2px 12px);
+  background-position: 10px 0;
+  background-repeat: repeat-y;
+  border-right:1px dashed var(--line);
+}
+.card-inner{margin-left:14px;}
+
+/* page tab (question counter) */
+.tab{
+  position:absolute; top:22px; right:-1px;
+  background:var(--ink); color:var(--paper-card);
+  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.04em;
+  padding:6px 14px 6px 16px; border-radius:8px 0 0 8px;
+}
+
+h1{font-family:'Lora',serif; font-weight:700; font-size:32px; line-height:1.15; margin:0 0 10px; color:var(--ink);}
+h2{font-family:'Lora',serif; font-weight:600; font-size:22px; margin:0 0 14px; color:var(--ink);}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 8px; display:block;
+}
+p{line-height:1.65; color:var(--ink-soft); margin:0 0 14px;}
+.lede{font-size:16px;}
+
+/* buttons */
+.btn{
+  font-family:'Work Sans',sans-serif; font-weight:600; font-size:15px;
+  border-radius:10px; padding:13px 26px; cursor:pointer; border:1px solid transparent;
+  transition:transform .12s ease, box-shadow .12s ease, background .15s ease;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--ink); color:var(--paper-card);}
+.btn-primary:hover{background:#16222E;}
+.btn-primary:disabled{background:#B9BEC2; cursor:not-allowed;}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--ink-soft);}
+.btn-row{display:flex; justify-content:space-between; align-items:center; margin-top:30px; gap:12px;}
+
+/* ---------- identity form ---------- */
+.field{margin-bottom:20px;}
+.field label{
+  display:block; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;
+}
+.field input, .field select{
+  width:100%; font-family:'Work Sans',sans-serif; font-size:16px; color:var(--ink);
+  border:none; border-bottom:1.5px solid var(--line); background:transparent;
+  padding:8px 2px; outline:none;
+}
+.field input:focus, .field select:focus{border-bottom-color:var(--accent);}
+.radio-row{display:flex; gap:18px; margin-top:4px;}
+.radio-row label{
+  display:flex; align-items:center; gap:7px; font-family:'Work Sans',sans-serif;
+  font-size:15px; color:var(--ink); text-transform:none; letter-spacing:0; cursor:pointer;
+}
+
+/* ---------- question ---------- */
+.situasi{font-family:'Lora',serif; font-size:20px; font-weight:500; line-height:1.5; color:var(--ink); margin:0 0 24px;}
+.option{
+  display:flex; gap:14px; align-items:flex-start; padding:14px 16px; border-radius:10px;
+  border:1.5px solid var(--line); margin-bottom:10px; cursor:pointer; background:var(--paper-card);
+  transition:border-color .15s ease, background .15s ease;
+}
+.option:hover{border-color:#B9C8BE; background:var(--accent-soft);}
+.option.selected{border-color:var(--accent); background:var(--accent-soft);}
+.option .letter{
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px; color:var(--accent);
+  width:22px; height:22px; border-radius:50%; border:1.5px solid var(--accent);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.option.selected .letter{background:var(--accent); color:#fff;}
+.option .text{font-size:15.5px; line-height:1.55; color:var(--ink);}
+
+/* progress stitches */
+.progress{display:flex; gap:5px; margin:26px 0 4px; flex-wrap:wrap;}
+.stitch{width:9px; height:9px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;}
+.stitch.done{background:var(--accent); border-color:var(--accent);}
+.stitch.current{border-color:var(--ink); border-width:2px;}
+.progress-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:10px;}
+.err{color:var(--rust); font-size:13px; margin-top:8px;}
+
+/* ---------- thank you / stamp ---------- */
+.stamp-wrap{display:flex; flex-direction:column; align-items:center; text-align:center; padding:20px 0 10px;}
+.stamp{width:118px; height:118px; margin-bottom:22px;}
+.empty{text-align:center; padding:50px 10px; color:var(--ink-soft);}
+
+@media (max-width:520px){
+  .card{padding:28px 18px;}
+  .card-inner{margin-left:8px;}
+  h1{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span><span>Bimbingan Konseling · Pola Asuh</span></div>
+  </div>
+  <div id="root"></div>
+</div>
+
+<script>
+const TYPE_LABEL = { OT: "Otoritatif (Demokratis)", OR: "Otoriter", PM: "Permisif", PN: "Penelantar (Uninvolved)" };
+const TYPE_ORDER = ["OT","OR","PM","PN"];
+
+// Tempel "Web app URL" dari Google Apps Script (lihat file AppsScript_SimpanKeGoogleSheet.gs) di sini.
+// Contoh: "https://script.google.com/macros/s/AKfycb.../exec"
+const SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby6zaeRtJhUEYNpHnH_orvCIwv2dAcQzKZEnBVbwua4PzgC3zqweDOSZiSe6hTR3Vhy/exec";
+
+const ITEMS = [
+  {tema:"Akademik / Nilai Sekolah", situasi:"Anak Bapak/Ibu pulang membawa nilai ulangan yang jauh di bawah rata-rata. Yang biasanya Bapak/Ibu lakukan:", opts:[["OR","Menegur dan memberi konsekuensi agar nilai berikutnya lebih baik."],["OT","Membahas bersama apa yang membuat anak kesulitan, lalu menyusun rencana belajar berikutnya."],["PM","Tidak terlalu mempersoalkan, karena nilai dianggap bukan prioritas utama."],["PN","Tidak banyak menanggapi karena sedang fokus dengan hal lain."]]},
+  {tema:"Penggunaan Gadget & Media Sosial", situasi:"Anak sering bermain HP/media sosial hingga larut malam. Yang biasanya Bapak/Ibu lakukan:", opts:[["OT","Menetapkan batas waktu penggunaan HP bersama anak dan menjelaskan alasannya."],["PN","Jarang mengecek atau menanyakan kebiasaan penggunaan HP anak."],["OR","Membatasi atau menyita HP secara sepihak tanpa banyak berdiskusi."],["PM","Membiarkan penggunaan HP berlangsung agar tidak memicu keributan."]]},
+  {tema:"Pergaulan / Pertemanan", situasi:"Anak ingin ikut nongkrong dengan teman yang belum begitu dikenal orang tua. Yang biasanya Bapak/Ibu lakukan:", opts:[["PM","Mengizinkan tanpa banyak bertanya lebih lanjut."],["OT","Menanyakan tentang teman tersebut lebih dulu, lalu mengizinkan dengan kesepakatan tertentu (mis. jam pulang)."],["PN","Tidak terlalu mengikuti dengan siapa saja anak bergaul."],["OR","Melarang anak ikut tanpa banyak penjelasan."]]},
+  {tema:"Pelanggaran Aturan Rumah", situasi:"Anak melanggar aturan yang sudah disepakati bersama (mis. pulang melebihi jam yang ditentukan). Yang biasanya Bapak/Ibu lakukan:", opts:[["PN","Tidak selalu menyadari saat aturan tersebut dilanggar."],["OR","Memberi hukuman tanpa banyak penjelasan lebih lanjut."],["OT","Mengingatkan kesepakatan yang sudah dibuat dan menerapkan konsekuensinya."],["PM","Memaafkan tanpa menerapkan konsekuensi apa pun."]]},
+  {tema:"Konflik dengan Saudara Kandung", situasi:"Anak bertengkar dengan kakak/adiknya di rumah. Yang biasanya Bapak/Ibu lakukan:", opts:[["OT","Menengahi dan mengajak keduanya bicara untuk mencari penyelesaian."],["OR","Menegur atau menghukum tanpa lebih dulu mendengar dari kedua sisi."],["PM","Membiarkan keduanya menyelesaikannya sendiri."],["PN","Tidak banyak terlibat karena sedang sibuk dengan hal lain."]]},
+  {tema:"Komunikasi & Kedekatan Sehari-hari", situasi:"Dalam keseharian, ketika anak ingin bercerita tentang hal pribadi (pertemanan, perasaan, masalahnya, dll). Yang biasanya Bapak/Ibu lakukan:", opts:[["PM","Mendengarkan sekilas, tanpa membahas lebih jauh."],["PN","Jarang ada momen mengobrol karena kesibukan masing-masing."],["OT","Meluangkan waktu mendengarkan cerita anak sampai selesai."],["OR","Mendengarkan sambil langsung memberi nasihat/arahan tanpa banyak bertanya lebih dulu."]]},
+  {tema:"Kemandirian & Tanggung Jawab", situasi:"Anak diminta mengerjakan tugas/tanggung jawabnya sendiri (mis. beres-beres kamar, mengerjakan PR). Yang biasanya Bapak/Ibu lakukan:", opts:[["OR","Mengawasi dan mengoreksi secara ketat sampai hasilnya sesuai."],["PN","Tidak banyak menanyakan apakah tugas tersebut sudah dikerjakan."],["PM","Ikut mengerjakan atau membantu penuh agar cepat selesai."],["OT","Memberi kesempatan mengerjakan sendiri, sesekali mengingatkan bila diperlukan."]]},
+  {tema:"Kesalahan & Kejujuran Anak", situasi:"Anak melakukan kesalahan, misalnya memecahkan barang di rumah. Yang biasanya Bapak/Ibu lakukan:", opts:[["PN","Tidak mengetahui kejadian tersebut karena tidak diberi tahu."],["OT","Membicarakan kejadiannya dan konsekuensi ke depan, tanpa menghukum berat."],["OR","Menegur atau menghukum meski anak sudah mengakui kesalahannya."],["PM","Tidak mempermasalahkan kejadian tersebut."]]},
+  {tema:"Waktu Bersama Keluarga", situasi:"Pada waktu senggang (mis. makan malam bersama atau akhir pekan). Yang biasanya terjadi di keluarga Bapak/Ibu:", opts:[["OT","Menyempatkan waktu berkumpul dan berbincang bersama anggota keluarga."],["OR","Waktu berkumpul lebih sering dipakai membahas kekurangan/perilaku anak."],["PN","Jarang ada waktu berkumpul bersama."],["PM","Berkumpul bersama, namun masing-masing sibuk dengan urusan sendiri."]]},
+  {tema:"Menghadapi Tekanan Emosi/Amarah Anak", situasi:"Anak sedang emosi, marah, atau ngambek. Yang biasanya Bapak/Ibu lakukan:", opts:[["PM","Menuruti keinginan anak agar suasana cepat mereda."],["OR","Meminta anak segera diam atau menahan emosinya."],["OT","Mengajak bicara untuk mencari tahu penyebab kemarahan anak."],["PN","Membiarkan anak menenangkan diri sendiri tanpa didekati."]]},
+  {tema:"Pengambilan Keputusan tentang Diri Anak", situasi:"Anak ingin memilih sendiri (mis. ekstrakurikuler atau bidang minat) yang berbeda dari harapan orang tua. Yang biasanya Bapak/Ibu lakukan:", opts:[["OR","Menentukan pilihan sesuai pertimbangan orang tua."],["OT","Mendiskusikan pilihan anak dan mempertimbangkannya sebelum memutuskan bersama."],["PN","Tidak terlalu mengikuti pilihan yang diambil anak."],["PM","Menyerahkan sepenuhnya kepada anak tanpa banyak masukan."]]},
+  {tema:"Menghadapi Kegagalan/Kekecewaan Anak", situasi:"Anak gagal dalam suatu hal (lomba, seleksi, ujian, dll) dan terlihat kecewa. Yang biasanya Bapak/Ibu lakukan:", opts:[["PN","Tidak banyak menanggapi kegagalan tersebut."],["PM","Menghibur sambil membenarkan alasan-alasan yang disampaikan anak."],["OR","Menyampaikan bahwa kegagalan itu karena kurangnya usaha anak."],["OT","Membicarakan penyebab kegagalan dan langkah selanjutnya bersama anak."]]},
+  {tema:"Permintaan Anak (Dituruti atau Tidak)", situasi:"Anak meminta sesuatu (barang, izin bepergian, tambahan uang saku, dll). Yang biasanya Bapak/Ibu lakukan:", opts:[["OT","Mempertimbangkan permintaan dan menjelaskan alasan bila menyetujui atau menolaknya."],["PM","Cenderung menuruti agar anak tidak kecewa."],["PN","Menuruti begitu saja tanpa banyak dipikirkan."],["OR","Menolak permintaan tanpa banyak penjelasan."]]},
+  {tema:"Disiplin saat Anak Berulang Kali Tidak Patuh", situasi:"Anak berulang kali tidak mematuhi teguran/nasihat meskipun sudah diperingatkan. Yang biasanya Bapak/Ibu lakukan:", opts:[["PM","Menegur berulang kali tanpa menerapkan konsekuensi."],["OR","Memberi hukuman fisik ringan (mis. mencubit) agar anak jera."],["PN","Membiarkan saja karena merasa percuma menegur."],["OT","Mencari tahu penyebabnya dan menyepakati konsekuensi yang jelas."]]},
+  {tema:"Gaya Hidup & Barang Bermerek/Mewah", situasi:"Anak meminta dibelikan barang bermerek/mahal karena ingin mengikuti tren atau gaya hidup teman-temannya. Yang biasanya Bapak/Ibu lakukan:", opts:[["PN","Tidak banyak mengikuti barang apa yang diminati anak."],["OT","Mendiskusikan kebutuhan dan keinginan sebelum memutuskan membelikan."],["PM","Cenderung membelikan agar anak tidak merasa berbeda dari teman-temannya."],["OR","Menolak dan menegur karena dianggap berlebihan."]]},
+  {tema:"Rutinitas & Kepatuhan terhadap Aturan Harian", situasi:"Dalam mengatur rutinitas harian anak (jam makan, belajar, tidur, dll). Yang biasanya terjadi di keluarga Bapak/Ibu:", opts:[["OR","Menetapkan jadwal tetap yang harus dipatuhi tanpa kompromi."],["PN","Tidak mengatur rutinitas anak secara khusus."],["OT","Menyusun jadwal bersama anak dengan sedikit ruang penyesuaian."],["PM","Tidak menetapkan jadwal tetap, mengikuti situasi saat itu."]]},
+  {tema:"Ibadah & Nilai Agama (Islam)", situasi:"Dalam mendampingi anak menjalankan ibadah sehari-hari (shalat, mengaji, puasa, dll). Yang biasanya Bapak/Ibu lakukan:", opts:[["OR","Menegur atau memarahi bila anak tidak menjalankannya."],["OT","Mengingatkan secara berkala dan menjelaskan alasannya."],["PM","Membiarkan anak menjalankan sesuai keinginannya sendiri."],["PN","Tidak banyak mengingatkan ibadah anak."]]},
+];
+
+const root = document.getElementById("root");
+
+let state = {
+  view: "landing",       // landing | identity | question | submitting | done
+  qIndex: 0,
+  identity: { parentName:"", childName:"", childClass:"", relation:"Ayah", birthOrder:"", siblingsTotal:"", date:"" },
+  answers: {},            // qIndex -> letter
+  submissions: [],
+  detailId: null,
+  err: ""
+};
+
+function letterFor(i){ return ["A","B","C","D"][i]; }
+
+function computeTally(answers){
+  const tally = { OT:0, OR:0, PM:0, PN:0 };
+  ITEMS.forEach((item,i)=>{
+    const letter = answers[i];
+    if(!letter) return;
+    const idx = letterFor(0)===letter?0:letterFor(1)===letter?1:letterFor(2)===letter?2:3;
+    const type = item.opts[idx][0];
+    tally[type]++;
+  });
+  return tally;
+}
+function dominantFrom(tally){
+  const max = Math.max(...TYPE_ORDER.map(t=>tally[t]));
+  const winners = TYPE_ORDER.filter(t=>tally[t]===max);
+  if(winners.length>1) return {code:"MIXED", label:"Campuran ("+winners.map(w=>TYPE_LABEL[w]).join(" & ")+")"};
+  return {code:winners[0], label:TYPE_LABEL[winners[0]]};
+}
+
+function render(){
+  root.innerHTML = "";
+  if(state.view==="landing") return renderLanding();
+  if(state.view==="identity") return renderIdentity();
+  if(state.view==="question") return renderQuestion();
+  if(state.view==="done") return renderDone();
+}
+
+function card(innerHtml, extra=""){
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerHTML = `<div class="tab">${extra}</div><div class="card-inner">${innerHtml}</div>`;
+  return div;
+}
+
+function renderLanding(){
+  const el = card(`
+    <span class="eyebrow">Angket · 17 Situasi</span>
+    <h1>Angket Situasi Pengasuhan Orang Tua</h1>
+    <p class="lede">Angket ini berisi gambaran situasi sehari-hari yang umum dialami orang tua/wali dalam mendampingi anak usia SMP. Untuk setiap situasi, pilih jawaban yang paling menggambarkan apa yang <b>biasanya</b> Bapak/Ibu lakukan — bukan yang paling ideal.</p>
+    <p>Tidak ada jawaban benar atau salah. Angket ini membantu sekolah memahami kebutuhan pendampingan anak, dan kerahasiaan jawaban Bapak/Ibu akan dijaga.</p>
+    <div class="btn-row" style="justify-content:flex-start;">
+      <button class="btn btn-primary" id="startBtn">Mulai Mengisi →</button>
+    </div>
+  `);
+  root.appendChild(el);
+  document.getElementById("startBtn").onclick = ()=>{ state.view="identity"; render(); };
+}
+
+const CLASS_OPTIONS = ["VII A","VII B","VII C","VII D","VII E","VII F","VII G","VII H","VII I","VII J"];
+
+function todayStr(){
+  const d = new Date();
+  return d.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function renderIdentity(){
+  if(!state.identity.date) state.identity.date = todayStr();
+  const classOptsHtml = `<option value="" disabled ${state.identity.childClass?'':'selected'}>Pilih kelas</option>` +
+    CLASS_OPTIONS.map(c=>`<option value="${c}" ${state.identity.childClass===c?'selected':''}>${c}</option>`).join("");
+
+  const el = card(`
+    <span class="eyebrow">Langkah 1 dari 2</span>
+    <h2>Identitas Pengisi</h2>
+    <div class="field"><label>Nama Orang Tua/Wali</label><input id="f-parent" value="${state.identity.parentName}" placeholder="Nama lengkap"/></div>
+    <div class="field"><label>Nama Anak</label><input id="f-child" value="${state.identity.childName}" placeholder="Nama anak"/></div>
+    <div class="field"><label>Kelas Anak</label>
+      <select id="f-class">${classOptsHtml}</select>
+    </div>
+    <div class="field">
+      <label>Anak Ke Berapa</label>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <input id="f-order" type="number" min="1" style="max-width:90px;" value="${state.identity.birthOrder}" placeholder="mis. 2"/>
+        <span style="color:var(--ink-soft); font-size:14px;">dari</span>
+        <input id="f-siblings" type="number" min="1" style="max-width:90px;" value="${state.identity.siblingsTotal}" placeholder="mis. 3"/>
+        <span style="color:var(--ink-soft); font-size:14px;">bersaudara</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Hubungan dengan Anak</label>
+      <div class="radio-row">
+        <label><input type="radio" name="rel" value="Ayah" ${state.identity.relation==='Ayah'?'checked':''}/> Ayah</label>
+        <label><input type="radio" name="rel" value="Ibu" ${state.identity.relation==='Ibu'?'checked':''}/> Ibu</label>
+        <label><input type="radio" name="rel" value="Wali" ${state.identity.relation==='Wali'?'checked':''}/> Wali</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tanggal Pengisian</label>
+      <input value="${state.identity.date}" disabled style="color:var(--ink-soft); border-bottom-style:dashed;"/>
+    </div>
+    <div class="err" id="idErr" style="display:none;">Mohon lengkapi nama orang tua, nama anak, dan kelas.</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn">← Kembali</button>
+      <button class="btn btn-primary" id="nextBtn">Lanjut ke Angket →</button>
+    </div>
+  `);
+  root.appendChild(el);
+  document.getElementById("backBtn").onclick = ()=>{ state.view="landing"; render(); };
+  document.getElementById("nextBtn").onclick = ()=>{
+    state.identity.parentName = document.getElementById("f-parent").value.trim();
+    state.identity.childName = document.getElementById("f-child").value.trim();
+    state.identity.childClass = document.getElementById("f-class").value;
+    state.identity.birthOrder = document.getElementById("f-order").value;
+    state.identity.siblingsTotal = document.getElementById("f-siblings").value;
+    state.identity.relation = document.querySelector('input[name="rel"]:checked').value;
+    if(!state.identity.parentName || !state.identity.childName || !state.identity.childClass){
+      document.getElementById("idErr").style.display = "block"; return;
+    }
+    state.qIndex = 0; state.view="question"; render();
+  };
+}
+
+function renderQuestion(){
+  const i = state.qIndex;
+  const item = ITEMS[i];
+  const chosen = state.answers[i];
+  const optsHtml = item.opts.map((opt,idx)=>{
+    const L = letterFor(idx);
+    const sel = chosen===L ? "selected" : "";
+    return `<div class="option ${sel}" data-letter="${L}"><div class="letter">${L}</div><div class="text">${opt[1]}</div></div>`;
+  }).join("");
+
+  const stitches = ITEMS.map((_,idx)=>{
+    let cls = "stitch";
+    if(state.answers[idx]) cls += " done";
+    if(idx===i) cls += " current";
+    return `<div class="${cls}"></div>`;
+  }).join("");
+
+  const el = card(`
+    <span class="eyebrow">${item.tema}</span>
+    <div class="situasi">${item.situasi}</div>
+    <div>${optsHtml}</div>
+    <div class="progress-label">${i+1} dari ${ITEMS.length} situasi terjawab: ${Object.keys(state.answers).length}</div>
+    <div class="progress">${stitches}</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="prevBtn" ${i===0?'disabled':''}>← Sebelumnya</button>
+      <button class="btn btn-primary" id="nextBtn" ${chosen?'':'disabled'}>${i===ITEMS.length-1?'Selesai & Kirim':'Selanjutnya →'}</button>
+    </div>
+  `, `${i+1} / ${ITEMS.length}`);
+  root.appendChild(el);
+
+  el.querySelectorAll(".option").forEach(opt=>{
+    opt.onclick = ()=>{ state.answers[i] = opt.dataset.letter; render(); };
+  });
+  document.getElementById("prevBtn").onclick = ()=>{ if(i>0){ state.qIndex--; render(); } };
+  document.getElementById("nextBtn").onclick = async ()=>{
+    if(!state.answers[i]) return;
+    if(i < ITEMS.length-1){ state.qIndex++; render(); }
+    else { await submitAll(); }
+  };
+}
+
+async function submitAll(){
+  state.view = "submitting"; renderSubmitting();
+  const tally = computeTally(state.answers);
+  const dom = dominantFrom(tally);
+  const id = "sub_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
+  const record = {
+    id,
+    parentName: state.identity.parentName,
+    childName: state.identity.childName,
+    childClass: state.identity.childClass,
+    relation: state.identity.relation,
+    birthOrder: state.identity.birthOrder,
+    siblingsTotal: state.identity.siblingsTotal,
+    date: state.identity.date,
+    answers: state.answers,
+    tally,
+    dominant: dom,
+    submittedAt: new Date().toISOString()
+  };
+  try{
+    await window.storage.set("submissions:"+id, JSON.stringify(record), true);
+  }catch(e){ console.error("Gagal menyimpan ke penyimpanan lokal:", e); }
+
+  if(SHEET_WEBHOOK_URL){
+    try{
+      // mode "no-cors" dipakai karena Google Apps Script Web App tidak selalu
+      // mengirim header CORS untuk permintaan biasa; browser tetap mengirim datanya,
+      // hanya saja kita tidak bisa membaca isi responsnya di sisi klien.
+      await fetch(SHEET_WEBHOOK_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(record),
+      });
+    }catch(e){ console.error("Gagal mengirim ke Google Sheet:", e); }
+  }
+  state.view = "done"; render();
+}
+
+function renderSubmitting(){
+  root.innerHTML = "";
+  const el = card(`<div class="empty">Menyimpan jawaban…</div>`);
+  root.appendChild(el);
+}
+
+function renderDone(){
+  const el = card(`
+    <div class="stamp-wrap">
+      <svg class="stamp" viewBox="0 0 120 120" fill="none">
+        <circle cx="60" cy="60" r="52" stroke="var(--accent)" stroke-width="3" stroke-dasharray="4 5"/>
+        <circle cx="60" cy="60" r="40" stroke="var(--accent)" stroke-width="2"/>
+        <path d="M42 61 L54 73 L80 47" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <h2>Terima kasih, angket telah tersimpan</h2>
+      <p>Jawaban Bapak/Ibu telah tercatat dan akan digunakan oleh guru BK untuk memahami kebutuhan pendampingan bagi ${state.identity.childName || 'ananda'}. Kerahasiaan jawaban tetap terjaga.</p>
+      <button class="btn btn-ghost" id="closeBtn">Tutup</button>
+    </div>
+  `);
+  root.appendChild(el);
+  document.getElementById("closeBtn").onclick = ()=>{
+    state = { view:"landing", qIndex:0, identity:{parentName:"",childName:"",childClass:"",relation:"Ayah",birthOrder:"",siblingsTotal:"",date:""}, answers:{}, submissions:[], detailId:null, err:"" };
+    render();
+  };
+}
+
+/* ---------------- init ---------------- */
+render();
+</script>
+</body>
+</html>
