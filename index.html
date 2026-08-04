@@ -195,7 +195,7 @@ const root = document.getElementById("root");
 let state = {
   view: "landing",       // landing | identity | question | submitting | done
   qIndex: 0,
-  identity: { parentName:"", childName:"", childClass:"", relation:"Ayah", birthOrder:"", siblingsTotal:"", date:"" },
+  identity: { parentName:"", childName:"", childClass:"", relation:"Ayah", birthOrder:"", siblingsTotal:"", year:"", date:"" },
   answers: {},            // qIndex -> letter
   submissions: [],
   detailId: null,
@@ -260,6 +260,7 @@ function todayStr(){
 
 function renderIdentity(){
   if(!state.identity.date) state.identity.date = todayStr();
+  if(!state.identity.year) state.identity.year = String(new Date().getFullYear());
   const classOptsHtml = `<option value="" disabled ${state.identity.childClass?'':'selected'}>Pilih kelas</option>` +
     CLASS_OPTIONS.map(c=>`<option value="${c}" ${state.identity.childClass===c?'selected':''}>${c}</option>`).join("");
 
@@ -287,6 +288,10 @@ function renderIdentity(){
         <label><input type="radio" name="rel" value="Ibu" ${state.identity.relation==='Ibu'?'checked':''}/> Ibu</label>
         <label><input type="radio" name="rel" value="Wali" ${state.identity.relation==='Wali'?'checked':''}/> Wali</label>
       </div>
+    </div>
+    <div class="field">
+      <label>Tahun</label>
+      <input value="${state.identity.year}" disabled style="color:var(--ink-soft); border-bottom-style:dashed; max-width:120px;"/>
     </div>
     <div class="field">
       <label>Tanggal Pengisian</label>
@@ -368,6 +373,7 @@ async function submitAll(){
     relation: state.identity.relation,
     birthOrder: state.identity.birthOrder,
     siblingsTotal: state.identity.siblingsTotal,
+    year: state.identity.year,
     date: state.identity.date,
     answers: state.answers,
     tally,
@@ -415,7 +421,7 @@ function renderDone(){
   `);
   root.appendChild(el);
   document.getElementById("closeBtn").onclick = ()=>{
-    state = { view:"landing", qIndex:0, identity:{parentName:"",childName:"",childClass:"",relation:"Ayah",birthOrder:"",siblingsTotal:"",date:""}, answers:{}, submissions:[], detailId:null, err:"" };
+    state = { view:"landing", qIndex:0, identity:{parentName:"",childName:"",childClass:"",relation:"Ayah",birthOrder:"",siblingsTotal:"",year:"",date:""}, answers:{}, submissions:[], detailId:null, err:"" };
     render();
   };
 }
